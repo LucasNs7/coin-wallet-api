@@ -1,14 +1,22 @@
-package com.lucas.coin_wallet_api.entity;
+package com.lucas.coin_wallet_api.model;
 
-import com.lucas.coin_wallet_api.Enum.Moeda;
+import com.lucas.coin_wallet_api.model.enums.Moeda;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
-@Data
-@Table(name = "tb_carteira")
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"usuario_id", "moeda"}
+        )
+)
 public class Carteira {
 
     @Id
