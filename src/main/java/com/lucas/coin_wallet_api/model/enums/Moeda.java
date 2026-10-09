@@ -1,4 +1,4 @@
-package com.lucas.coin_wallet_api.Enum;
+package com.lucas.coin_wallet_api.model.enums;
 
 import lombok.Getter;
 
