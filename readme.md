@@ -53,51 +53,51 @@ flowchart TD
 
 ## 🧩 Design Patterns e recursos utilizados
 
-### Adapter Pattern
+### -> Adapter Pattern
 
 Utilizado pelo MapStruct - Para adaptar DTOs em Entidades e vice-versa.
 
 Utilizado pelo OpenFeign - Para adaptar a resposta JSON da AwesomeAPI em DTOs internos.
 
-### Facade Pattern
+### -> Facade Pattern
 
 Camadas de Service e Controller, simplificando o acesso a regras de negócio e integrações complexas.
 
-### Proxy Pattern
+### -> Proxy Pattern
 
 Empregado pelo Spring Data JPA (@Repository), OpenFeign (@FeignClient) e gerenciamento transacional (@Transactional).
 
-### Singleton Pattern
+### -> Singleton Pattern
 
 Gerenciamento dos Beans da aplicação via Container IoC do Spring Framework.
 
-### Builder Pattern
+### -> Builder Pattern
 
 Construção da cadeia de filtros de segurança (SecurityFilterChain).
 
-### DTO — Data Transfer Object
+### -> DTO — Data Transfer Object
 
 Objetos utilizados para transportar dados entre a API e o cliente sem expor diretamente as entidades JPA.
 
 Exemplos: `UsuarioRequest`, `UsuarioResponse`, `CarteiraRequest` e `PatrimonioTotalResponse`.
 
-### Repository Pattern
+### -> Repository Pattern
 
 Abstrai o acesso ao banco de dados, evitando que as consultas SQL ou operações de persistência fiquem diretamente nos serviços.
 
 Implementado com interfaces que estendem `JpaRepository`.
 
-### Service Layer
+### -> Service Layer
 
 Centraliza as regras de negócio, mantendo os controllers enxutos e separando a lógica da aplicação das requisições HTTP.
 
 Exemplos: `UsuarioService` e `CarteiraService`.
 
-### Client para integração externa
+### -> Client para integração externa
 
 O `AwesomeApiClient` utiliza Spring Cloud OpenFeign para realizar chamadas HTTP de forma declarativa, isolando a comunicação com a API externa do restante da aplicação.
 
-### Injeção de dependências
+### -> Injeção de dependências
 
 O Spring gerencia os componentes e suas dependências. O Lombok, por meio de `@RequiredArgsConstructor`, reduz o código necessário para a injeção via construtor.
 
