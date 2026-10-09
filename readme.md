@@ -268,8 +268,7 @@ O foco está em construir uma API simples, funcional e bem estruturada, adequada
 **Lucas**  
 *Desenvolvedor Java Backend*
 
-![LinkedIn](https://www.linkedin.com/in/lucas-ns7/)
-![GitHub](https://github.com/LucasNs7)
+[LinkedIn](https://www.linkedin.com/in/lucas-ns7/) | [GitHub](https://github.com/LucasNs7)
 
 ---
 
