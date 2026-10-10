@@ -2,7 +2,7 @@
 
 > API RESTful desenvolvida com **Java e Spring Boot 4** para gerenciamento de usuários e carteiras de moedas, com cálculo de patrimônio total convertido para reais utilizando cotações da **AwesomeAPI**.
 >
-> Projeto desenvolvido no módulo de Design Patterns do bootcamp **DIO — Itaú: Java com Inteligência Artificial**, com foco na organização das camadas, integração com serviços externos e boas práticas de desenvolvimento backend.
+> Projeto desenvolvido no módulo de Design Patterns do bootcamp **DIO — Itaú: Java com Inteligência Artificial**, com foco na organização das camadas, integração com serviços externos, documentação da API e boas práticas de desenvolvimento backend.
 
 ---
 
@@ -12,19 +12,22 @@ A **CoinWallet API** permite cadastrar usuários, gerenciar saldos em diferentes
 
 ### Principais funcionalidades
 
-* **Gestão de usuários:** cadastro, consulta e exclusão de usuários.
-* **Gestão de carteiras:** criação de carteiras por moeda e atualização de saldo por acréscimo de quantidade.
-* **Consulta de patrimônio:** cálculo do valor total das carteiras em reais.
-* **Cotação em tempo real:** integração com a AwesomeAPI utilizando Spring Cloud OpenFeign.
-* **Persistência de dados:** armazenamento de usuários e carteiras em PostgreSQL com Spring Data JPA.
-* **Validação de dados:** validação das requisições com Jakarta Bean Validation.
-* **Tratamento de exceções:** respostas adequadas para usuários não encontrados, conflitos e indisponibilidade de cotações.
+- **Gestão de usuários:** cadastro, consulta e exclusão de usuários.
+- **Gestão de carteiras:** criação de carteiras por moeda e atualização de saldo por acréscimo de quantidade.
+- **Consulta de patrimônio:** consulta das carteiras de um usuário e cálculo do patrimônio total em reais.
+- **Cotação de moedas:** integração com a AwesomeAPI utilizando Spring Cloud OpenFeign.
+- **Persistência de dados:** armazenamento de usuários e carteiras em PostgreSQL com Spring Data JPA.
+- **Validação de dados:** validação das requisições com Jakarta Bean Validation.
+- **Mapeamento de objetos:** conversão entre DTOs e entidades utilizando MapStruct.
+- **Documentação da API:** documentação interativa com Swagger UI e especificação OpenAPI.
+- **Testes unitários:** utilização de JUnit e Mockito para testar componentes da aplicação.
+- **Tratamento de exceções:** respostas adequadas para usuários não encontrados, conflitos e indisponibilidade de cotações.
 
 ---
 
 ## 🏛️ Arquitetura do Projeto
 
-O projeto utiliza uma arquitetura em camadas, separando as responsabilidades para facilitar a manutenção e a compreensão do código.
+O projeto utiliza uma arquitetura em camadas, separando as responsabilidades para facilitar a manutenção, os testes e a compreensão do código.
 
 ```mermaid
 flowchart TD
@@ -53,53 +56,74 @@ flowchart TD
 
 ## 🧩 Design Patterns e recursos utilizados
 
+O projeto utiliza padrões arquiteturais e recursos do Spring Framework para organizar o código e reduzir o acoplamento entre os componentes. Nem todo recurso utilizado representa, necessariamente, uma implementação explícita de um padrão GoF.
+
 ### -> Adapter Pattern
 
-Utilizado pelo MapStruct - Para adaptar DTOs em Entidades e vice-versa.
+O Adapter Pattern permite que interfaces incompatíveis trabalhem em conjunto por meio de um componente adaptador.
 
-Utilizado pelo OpenFeign - Para adaptar a resposta JSON da AwesomeAPI em DTOs internos.
+Na aplicação, o mapeamento de DTOs e a conversão de respostas externas para estruturas internas possuem objetivos relacionados à adaptação de dados. Entretanto, **MapStruct e OpenFeign não caracterizam automaticamente implementações explícitas do Adapter Pattern**.
+
+- **MapStruct:** automatiza a conversão entre DTOs e entidades.
+- **OpenFeign:** simplifica a comunicação HTTP com a AwesomeAPI e a desserialização das respostas em objetos Java.
 
 ### -> Facade Pattern
 
-Camadas de Service e Controller, simplificando o acesso a regras de negócio e integrações complexas.
+O Facade Pattern fornece uma interface simplificada para um conjunto de funcionalidades ou subsistemas.
+
+A camada de serviço oferece um ponto central para executar as regras de negócio e coordenar componentes como repositórios, mapeadores e clientes externos. Essa organização pode desempenhar um papel semelhante ao de uma fachada, dependendo da implementação concreta.
 
 ### -> Proxy Pattern
 
-Empregado pelo Spring Data JPA (@Repository), OpenFeign (@FeignClient) e gerenciamento transacional (@Transactional).
+O Proxy Pattern utiliza um objeto intermediário para controlar ou intermediar o acesso a outro objeto.
+
+O Spring utiliza proxies em diferentes funcionalidades da aplicação, como:
+
+- **Spring Data JPA:** implementações geradas para as interfaces de repositório.
+- **OpenFeign:** implementação declarativa do cliente HTTP por meio de um objeto gerado pelo framework.
+- **`@Transactional`:** pode utilizar proxies para aplicar o gerenciamento transacional aos métodos interceptados.
+
+Esses recursos são gerenciados pelo framework, sem exigir a implementação manual de todas as classes de proxy.
 
 ### -> Singleton Pattern
 
-Gerenciamento dos Beans da aplicação via Container IoC do Spring Framework.
+O Singleton Pattern restringe a criação de instâncias de uma classe a uma única instância acessível.
+
+No Spring, os beans utilizam o escopo `singleton` por padrão. Isso significa que o container mantém uma instância compartilhada de cada bean dentro daquele contexto de aplicação, salvo configuração diferente.
 
 ### -> Builder Pattern
 
-Construção da cadeia de filtros de segurança (SecurityFilterChain).
+O Builder Pattern permite construir objetos complexos por meio de etapas de configuração.
+
+A configuração da `SecurityFilterChain` utiliza a API fluente do Spring Security para declarar regras e filtros de segurança. Essa construção pode apresentar características semelhantes ao Builder, mas o uso da DSL, isoladamente, não comprova a implementação explícita do padrão GoF.
 
 ### -> DTO — Data Transfer Object
 
-Objetos utilizados para transportar dados entre a API e o cliente sem expor diretamente as entidades JPA.
+Objetos utilizados para transportar dados entre a API e o cliente, evitando a exposição direta das entidades JPA.
 
-Exemplos: `UsuarioRequest`, `UsuarioResponse`, `CarteiraRequest` e `PatrimonioTotalResponse`.
+Exemplos: `UsuarioRequest`, `UsuarioResponse`, `CarteiraRequest`, `CarteiraResponse` e `PatrimonioTotalResponse`.
 
 ### -> Repository Pattern
 
-Abstrai o acesso ao banco de dados, evitando que as consultas SQL ou operações de persistência fiquem diretamente nos serviços.
+Abstrai o acesso aos dados, evitando que as operações de persistência fiquem diretamente nos serviços.
 
-Implementado com interfaces que estendem `JpaRepository`.
+Implementado por interfaces que estendem `JpaRepository`, aproveitando os recursos do Spring Data JPA.
 
 ### -> Service Layer
 
-Centraliza as regras de negócio, mantendo os controllers enxutos e separando a lógica da aplicação das requisições HTTP.
+Centraliza as regras de negócio e mantém os controllers enxutos, separando a lógica da aplicação das requisições HTTP.
 
 Exemplos: `UsuarioService` e `CarteiraService`.
 
 ### -> Client para integração externa
 
-O `AwesomeApiClient` utiliza Spring Cloud OpenFeign para realizar chamadas HTTP de forma declarativa, isolando a comunicação com a API externa do restante da aplicação.
+O `AwesomeApiClient` utiliza Spring Cloud OpenFeign para realizar chamadas HTTP de forma declarativa, isolando a comunicação com a AwesomeAPI do restante da aplicação.
 
 ### -> Injeção de dependências
 
-O Spring gerencia os componentes e suas dependências. O Lombok, por meio de `@RequiredArgsConstructor`, reduz o código necessário para a injeção via construtor.
+O Spring gerencia os componentes e suas dependências por meio do container IoC.
+
+O Lombok, com `@RequiredArgsConstructor`, reduz o código necessário para a injeção via construtor ao gerar automaticamente um construtor para os atributos `final` e outros atributos obrigatórios.
 
 ---
 
@@ -142,20 +166,64 @@ O enum `Moeda` define as moedas disponíveis no projeto. Os valores devem corres
 
 ## 🛠️ Stack Tecnológica
 
-| Componente            | Tecnologia                                   |
-| --------------------- | -------------------------------------------- |
-| Linguagem             | Java                                         |
-| Framework             | Spring Boot 4                                |
-| Persistência          | Spring Data JPA / Hibernate                  |
-| Banco de dados        | PostgreSQL                                   |
-| Integração HTTP       | Spring Cloud OpenFeign                       |
-| Mapeamento de objetos | MapStruct                                    |
-| Validação             | Jakarta Bean Validation                      |
-| Segurança de senha    | Spring Security PasswordEncoder              |
-| Utilitários           | Lombok                                       |
-| Infraestrutura        | Docker / Docker Compose                      |
-| Build                 | Gradle                                       |
-| Documentação da API   | Readme.md |
+| Componente | Tecnologia |
+|---|---|
+| Linguagem | Java |
+| Framework | Spring Boot 4 |
+| Persistência | Spring Data JPA / Hibernate |
+| Banco de dados | PostgreSQL |
+| Integração HTTP | Spring Cloud OpenFeign |
+| Mapeamento de objetos | MapStruct |
+| Validação | Jakarta Bean Validation |
+| Segurança de senha | Spring Security `PasswordEncoder` |
+| Utilitários | Lombok |
+| Testes unitários | JUnit / Mockito |
+| Documentação da API | Springdoc OpenAPI / Swagger UI |
+| Especificação da API | OpenAPI JSON |
+| Infraestrutura | Docker / Docker Compose |
+| Build | Gradle |
+
+---
+
+## 📚 Documentação da API — Swagger/OpenAPI
+
+A aplicação utiliza **Springdoc OpenAPI** para gerar a especificação da API e disponibilizar uma interface interativa para consultar os endpoints e experimentar as requisições HTTP.
+
+### Swagger UI
+
+Com a aplicação em execução, acesse:
+
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+### Especificação OpenAPI em JSON
+
+A especificação gerada pela aplicação pode ser consultada em:
+
+[http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+
+### Gerar o arquivo OpenAPI
+
+O projeto utiliza o plugin `org.springdoc.openapi-gradle-plugin` para gerar um arquivo JSON da documentação.
+
+Com a aplicação configurada e as dependências necessárias disponíveis, execute:
+
+```bash
+./gradlew generateOpenApiDocs
+```
+
+No Windows, utilizando o terminal compatível com o Gradle Wrapper:
+
+```bash
+gradlew.bat generateOpenApiDocs
+```
+
+Conforme a configuração do `build.gradle`, o arquivo será gerado em:
+
+```text
+docs/openapi.json
+```
+
+A geração utiliza a URL configurada em `apiDocsUrl`, que aponta para `http://localhost:8080/v3/api-docs`. Portanto, a aplicação precisa estar acessível nessa URL durante a execução da tarefa.
 
 ---
 
@@ -163,10 +231,10 @@ O enum `Moeda` define as moedas disponíveis no projeto. Os valores devem corres
 
 ### Pré-requisitos
 
-* Git
-* Docker Desktop e Docker Compose
-* JDK compatível com a versão Java configurada no projeto
-* Gradle Wrapper, incluído no repositório
+- Git.
+- Docker Desktop e Docker Compose.
+- JDK compatível com a versão Java configurada no projeto.
+- Gradle Wrapper, incluído no repositório.
 
 ### 1. Clonar o repositório
 
@@ -177,15 +245,19 @@ cd coin-wallet-api
 
 ### 2. Configurar o banco de dados
 
-Confira o `docker-compose.yml` e o `application.properties` para verificar o nome do banco, usuário, senha e porta utilizados.
+Confira o `docker-compose.yml` e o `application.properties` para verificar o nome do banco, usuário, senha, porta e demais configurações utilizadas.
 
-Se o projeto estiver configurado para utilizar variáveis de ambiente, crie um arquivo `.env` com os nomes definidos no Compose.
+Caso o projeto utilize variáveis de ambiente, configure os valores exigidos antes de iniciar a aplicação. Se houver um arquivo de exemplo de configuração, utilize-o como referência.
+
+Não publique credenciais reais no repositório.
 
 ### 3. Iniciar o PostgreSQL
 
 ```bash
 docker compose up -d
 ```
+
+Verifique se o container do banco foi iniciado corretamente antes de executar a aplicação.
 
 ### 4. Executar a aplicação
 
@@ -202,6 +274,10 @@ gradlew.bat bootRun
 ```
 
 Por padrão, o Spring Boot utiliza a porta `8080`, salvo configuração diferente.
+
+Após a inicialização, a documentação interativa poderá ser acessada em:
+
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 ---
 
@@ -224,12 +300,23 @@ As rotas abaixo correspondem aos controllers apresentados no projeto.
 | `POST` | `/carteiras`                   | Cria uma carteira ou acrescenta saldo à existente           |
 | `GET`  | `/carteiras/total-brl/{email}` | Consulta as carteiras e calcula o patrimônio total em reais |
 
-**Observações:**
+### Observações
 
-* O cadastro de usuário retorna `201 Created`.
-* As demais operações apresentadas retornam `200 OK` em caso de sucesso.
-* As requisições com DTOs validados utilizam `@Valid`.
-* O patrimônio depende da disponibilidade das cotações necessárias na AwesomeAPI.
+- O cadastro de usuário retorna `201 Created`, conforme a implementação descrita.
+- As demais operações devem ser consultadas nos controllers para confirmar seus respectivos status HTTP de sucesso.
+- As requisições com DTOs validados utilizam `@Valid`.
+- O patrimônio depende da disponibilidade das cotações necessárias na AwesomeAPI.
+- Os detalhes dos parâmetros, corpos das requisições e respostas podem ser consultados no Swagger UI.
+
+### Resposta do patrimônio total
+
+O DTO `PatrimonioTotalResponse` contém os seguintes campos:
+
+- `usuarioEmail`: e-mail do usuário consultado.
+- `carteiras`: lista de carteiras associadas ao usuário.
+- `totalEmBrl`: valor total do patrimônio convertido para reais.
+
+O cálculo considera os saldos das carteiras e as cotações necessárias para a conversão, de acordo com as regras de negócio implementadas.
 
 ---
 
@@ -251,17 +338,21 @@ As rotas abaixo correspondem aos controllers apresentados no projeto.
 
 8. **Escopo simplificado:** O projeto prioriza a gestão de usuários, carteiras e consulta de patrimônio, sem adicionar funcionalidades de histórico ou simulação de conversão que não estejam implementadas nos endpoints atuais.
 
-9. **Segurança:** A aplicação não exige autenticação nem autorização por usuário ou perfil. Os endpoints estão publicamente acessíveis, e a proteção CSRF está desabilitada. 
+9. **Segurança:** A aplicação não exige autenticação nem autorização por usuário ou perfil. Os endpoints estão publicamente acessíveis, e a proteção CSRF está desabilitada.
 
 10. **Config de Segurança:** Essa configuração foi adotada para simplificar o escopo do projeto, garantindo criptografia de senha, e não é recomendada para uma aplicação financeira em produção.
+
+11. **Testes unitários:** JUnit e Mockito permitem verificar regras de negócio e simular dependências, como repositórios e clientes externos, reduzindo a necessidade de acessar serviços reais durante esses testes.
+
+12. **Documentação OpenAPI:** o Springdoc OpenAPI gera uma especificação padronizada da API e disponibiliza o Swagger UI para facilitar a exploração dos endpoints e a realização de testes manuais.
 
 ---
 
 ## 🎯 Objetivo do Projeto
 
-Aplicar os conceitos de desenvolvimento backend com Java e Spring Boot, demonstrando a utilização de padrões e recursos que favorecem a organização do código, a separação de responsabilidades e a integração com serviços externos.
+Aplicar os conceitos de desenvolvimento backend com Java e Spring Boot, demonstrando a utilização de padrões de projeto, padrões arquiteturais e recursos do framework que favorecem a organização do código, a separação de responsabilidades, os testes e a integração com serviços externos.
 
-O foco está em construir uma API simples, funcional e bem estruturada, adequada ao desafio proposto no bootcamp.
+O foco está em construir uma API simples, funcional e bem estruturada, com documentação acessível e adequada ao desafio proposto no bootcamp.
 
 ---
 
@@ -274,7 +365,7 @@ O foco está em construir uma API simples, funcional e bem estruturada, adequada
 
 ---
 
-*Projeto desenvolvido no módulo de Design Patterns como parte do Bootcamp da DIO: Itaú - Java com Inteligência Artificial.*
+*Projeto de Design Patterns desenvolvido como parte do Bootcamp da DIO: **Itaú - Java com Inteligência Artificial**.*
 
 
 </div>

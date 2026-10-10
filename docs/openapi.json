@@ -1,0 +1,267 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/usuarios": {
+      "post": {
+        "tags": [
+          "usuario-controller"
+        ],
+        "operationId": "criar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carteiras": {
+      "post": {
+        "tags": [
+          "carteira-controller"
+        ],
+        "operationId": "criarOuAtualizar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CarteiraRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarteiraResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usuarios/{email}": {
+      "get": {
+        "tags": [
+          "usuario-controller"
+        ],
+        "operationId": "buscarPorEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "usuario-controller"
+        ],
+        "operationId": "excluir",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carteiras/total-brl/{email}": {
+      "get": {
+        "tags": [
+          "carteira-controller"
+        ],
+        "operationId": "calcularTotalEmBrl",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatrimonioTotalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UsuarioRequest": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "senha": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?\u003d.*[a-z])(?\u003d.*[A-Z])(?\u003d.*\\d)(?\u003d.*[@$!%*?\u0026])[A-Za-z\\d@$!%*?\u0026]{8,}$"
+          }
+        },
+        "required": [
+          "email",
+          "nome",
+          "senha"
+        ]
+      },
+      "UsuarioResponse": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "CarteiraRequest": {
+        "type": "object",
+        "properties": {
+          "usuarioEmail": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "moeda": {
+            "type": "string",
+            "enum": [
+              "BRL",
+              "USD",
+              "EUR",
+              "BTC",
+              "ETH"
+            ]
+          },
+          "quantidade": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "moeda",
+          "quantidade",
+          "usuarioEmail"
+        ]
+      },
+      "CarteiraResponse": {
+        "type": "object",
+        "properties": {
+          "moeda": {
+            "type": "string",
+            "enum": [
+              "BRL",
+              "USD",
+              "EUR",
+              "BTC",
+              "ETH"
+            ]
+          },
+          "quantidade": {
+            "type": "number"
+          }
+        }
+      },
+      "PatrimonioTotalResponse": {
+        "type": "object",
+        "properties": {
+          "usuarioEmail": {
+            "type": "string"
+          },
+          "carteiras": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CarteiraResponse"
+            }
+          },
+          "totalEmBrl": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
