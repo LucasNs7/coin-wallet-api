@@ -2,9 +2,9 @@ package com.lucas.coin_wallet_api.service;
 
 import com.lucas.coin_wallet_api.client.AwesomeApiClient;
 import com.lucas.coin_wallet_api.client.AwesomeApiCotacaoResponse;
-import com.lucas.coin_wallet_api.dto.CarteiraRequest;
-import com.lucas.coin_wallet_api.dto.CarteiraResponse;
-import com.lucas.coin_wallet_api.dto.PatrimonioTotalResponse;
+import com.lucas.coin_wallet_api.controller.dto.CarteiraRequest;
+import com.lucas.coin_wallet_api.controller.dto.CarteiraResponse;
+import com.lucas.coin_wallet_api.controller.dto.PatrimonioTotalResponse;
 import com.lucas.coin_wallet_api.exception.CotacaoIndisponivelException;
 import com.lucas.coin_wallet_api.mapper.CarteiraMapper;
 import com.lucas.coin_wallet_api.model.Carteira;
@@ -32,10 +32,13 @@ public class CarteiraService {
     private final AwesomeApiClient awesomeApiClient;
 
     public CarteiraResponse criarOuAtualizar(CarteiraRequest request) {
-        Usuario usuario = usuarioService.buscaUsuarioPorEmail(request.usuarioEmail());
+        String userEmail = request.usuarioEmail();
 
-        Carteira carteira = carteiraRepository.findByUsuarioAndMoeda(usuario, request.moeda())
-                .orElseGet(() -> carteiraMapper.toEntity(request, usuario));
+        Carteira carteira = carteiraRepository.findByUsuarioEmailAndMoeda(userEmail, request.moeda())
+                .orElseGet(() -> {
+                    Usuario usuario = usuarioService.buscaUsuarioPorEmail(userEmail);
+                    return carteiraMapper.toEntity(request, usuario);
+                });
 
         if (carteira.getId() != null) {
             carteira.setQuantidade(carteira.getQuantidade().add(request.quantidade()));
@@ -46,9 +49,9 @@ public class CarteiraService {
 
     @Transactional
     public PatrimonioTotalResponse calcularTotalEmBrl(String email) {
-        Usuario usuario = usuarioService.buscaUsuarioPorEmail(email);
-
-        List<Carteira> carteiras = carteiraRepository.findAllByUsuario(usuario);
+        // Spring Security garantiria email válido com Usuário existente e autenticado.
+        // Retorna lista vazia e total zero se o usuário não tiver carteiras.
+        List<Carteira> carteiras = carteiraRepository.findAllByUsuarioEmail(email);
 
         BigDecimal total = BigDecimal.ZERO;
 
@@ -69,31 +72,42 @@ public class CarteiraService {
         }
 
         return new PatrimonioTotalResponse(
-                usuario.getEmail(),
+                email,
                 respostas,
                 total.setScale(4, RoundingMode.HALF_EVEN)
         );
     }
 
+    /**<p><b>parDeMoedas:</b> Indica a relação de troca entre duas moedas.<br>
+     * <b>Ex:</b> {@code USD-BRL} -> "Quanto custa 1 Dólar em Reais?".</p>
+     * @return O valor do {@code bid} (preço atual de compra) da moeda em Reais.
+     * @throws CotacaoIndisponivelException para erros genéricos da transação entre APIs.
+     */
     private BigDecimal buscarCotacaoParaBrl(Moeda moeda) {
-        String par = moeda.name() + "-BRL";
+        String parDeMoedas = moeda.name() + "-BRL";
         String chaveResposta = moeda.name() + "BRL";
 
         try {
-            Map<String, AwesomeApiCotacaoResponse> resposta = awesomeApiClient.buscarCotacao(par);
+            Map<String, AwesomeApiCotacaoResponse> resposta =
+                    awesomeApiClient.buscarCotacao(parDeMoedas);
 
-            AwesomeApiCotacaoResponse cotacao = resposta == null ? null : resposta.get(chaveResposta);
+            AwesomeApiCotacaoResponse cotacao =
+                    (resposta != null) ? resposta.get(chaveResposta) : null;
 
             if (cotacao == null || cotacao.bid() == null) {
-                throw new CotacaoIndisponivelException("Cotação indisponível para " + par + ".");
+                throw new CotacaoIndisponivelException(
+                        "Cotação indisponível para " + parDeMoedas + "."
+                );
             }
 
             return cotacao.bid();
 
-        } catch (CotacaoIndisponivelException exception) {
-            throw exception;
-        } catch (Exception exception) {
-            throw new CotacaoIndisponivelException("Não foi possível consultar a cotação de " + par + ".");
+        } catch (CotacaoIndisponivelException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CotacaoIndisponivelException(
+                    "Não foi possível consultar a cotação de " + parDeMoedas + ".", e
+            );
         }
     }
 }

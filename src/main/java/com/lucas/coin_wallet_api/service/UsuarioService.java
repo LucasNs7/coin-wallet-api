@@ -1,7 +1,7 @@
 package com.lucas.coin_wallet_api.service;
 
-import com.lucas.coin_wallet_api.dto.UsuarioRequest;
-import com.lucas.coin_wallet_api.dto.UsuarioResponse;
+import com.lucas.coin_wallet_api.controller.dto.UsuarioRequest;
+import com.lucas.coin_wallet_api.controller.dto.UsuarioResponse;
 import com.lucas.coin_wallet_api.exception.ConflictException;
 import com.lucas.coin_wallet_api.exception.ResourceNotFoundException;
 import com.lucas.coin_wallet_api.mapper.UsuarioMapper;

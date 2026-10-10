@@ -1,7 +1,7 @@
 package com.lucas.coin_wallet_api.mapper;
 
-import com.lucas.coin_wallet_api.dto.UsuarioRequest;
-import com.lucas.coin_wallet_api.dto.UsuarioResponse;
+import com.lucas.coin_wallet_api.controller.dto.UsuarioRequest;
+import com.lucas.coin_wallet_api.controller.dto.UsuarioResponse;
 import com.lucas.coin_wallet_api.model.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface CarteiraRepository extends JpaRepository<Carteira, Long> {
 
-    Optional<Carteira> findByUsuarioAndMoeda(Usuario usuario, Moeda moeda);
+    Optional<Carteira> findByUsuarioEmailAndMoeda(String email, Moeda moeda);
 
-    List<Carteira> findAllByUsuario(Usuario usuario);
+    List<Carteira> findAllByUsuarioEmail(String email);
 }
