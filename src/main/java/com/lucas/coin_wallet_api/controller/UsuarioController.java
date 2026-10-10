@@ -1,7 +1,7 @@
 package com.lucas.coin_wallet_api.controller;
 
-import com.lucas.coin_wallet_api.dto.UsuarioRequest;
-import com.lucas.coin_wallet_api.dto.UsuarioResponse;
+import com.lucas.coin_wallet_api.controller.dto.UsuarioRequest;
+import com.lucas.coin_wallet_api.controller.dto.UsuarioResponse;
 import com.lucas.coin_wallet_api.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +18,8 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<UsuarioResponse> criar(@Valid @RequestBody UsuarioRequest request) {
-        UsuarioResponse response = usuarioService.cadastrar(request);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(usuarioService.cadastrar(request));
     }
 
     @GetMapping("/{email}")

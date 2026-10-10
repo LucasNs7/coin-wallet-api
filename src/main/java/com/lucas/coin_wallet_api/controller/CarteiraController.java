@@ -1,12 +1,11 @@
 package com.lucas.coin_wallet_api.controller;
 
-import com.lucas.coin_wallet_api.dto.CarteiraRequest;
-import com.lucas.coin_wallet_api.dto.CarteiraResponse;
-import com.lucas.coin_wallet_api.dto.PatrimonioTotalResponse;
+import com.lucas.coin_wallet_api.controller.dto.CarteiraRequest;
+import com.lucas.coin_wallet_api.controller.dto.CarteiraResponse;
+import com.lucas.coin_wallet_api.controller.dto.PatrimonioTotalResponse;
 import com.lucas.coin_wallet_api.service.CarteiraService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
