@@ -251,7 +251,9 @@ As rotas abaixo correspondem aos controllers apresentados no projeto.
 
 8. **Escopo simplificado:** O projeto prioriza a gestão de usuários, carteiras e consulta de patrimônio, sem adicionar funcionalidades de histórico ou simulação de conversão que não estejam implementadas nos endpoints atuais.
 
-9. **Segurança:** Devido ao escopo simples do projeto as configs de segurança não estão desenvolvidas, optei apenas por criptrografia de senha. Os endpoints estão a livre acesso, sem autenticação de usuários e roles.
+9. **Segurança:** A aplicação não exige autenticação nem autorização por usuário ou perfil. Os endpoints estão publicamente acessíveis, e a proteção CSRF está desabilitada. 
+
+10. **Config de Segurança:** Essa configuração foi adotada para simplificar o escopo do projeto, garantindo criptografia de senha, e não é recomendada para uma aplicação financeira em produção.
 
 ---
 
