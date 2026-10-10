@@ -274,7 +274,7 @@ O foco está em construir uma API simples, funcional e bem estruturada, adequada
 
 ---
 
-*Projeto desenvolvido no módulo de Design Patterns como parte do Bootcamp da DIO: Itaú - Java com Inteligência Artificial.*
+*Projeto de Design Patterns desenvolvido como parte do Bootcamp da DIO: **Itaú - Java com Inteligência Artificial**.*
 
 
 </div>
