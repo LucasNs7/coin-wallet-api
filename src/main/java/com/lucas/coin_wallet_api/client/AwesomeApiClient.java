@@ -13,7 +13,5 @@ import java.util.Map;
 public interface AwesomeApiClient {
 
     @GetMapping("/last/{par}")
-    Map<String, AwesomeApiCotacaoResponse> buscarCotacao(
-            @PathVariable("par") String par
-    );
+    Map<String, AwesomeApiCotacaoResponse> buscarCotacao(@PathVariable("par") String par);
 }

@@ -1,4 +1,4 @@
-package com.lucas.coin_wallet_api.dto;
+package com.lucas.coin_wallet_api.controller.dto;
 
 import com.lucas.coin_wallet_api.model.enums.Moeda;
 

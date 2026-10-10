@@ -12,11 +12,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(
-        uniqueConstraints = @UniqueConstraint(
-                columnNames = {"usuario_id", "moeda"}
-        )
-)
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "moeda"}))
 public class Carteira {
 
     @Id
